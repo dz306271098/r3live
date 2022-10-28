@@ -35,9 +35,10 @@ Eigen::Matrix<T, 3, 3> Exp(const Eigen::Matrix<T, 3, 1> &ang_vel, const Ts &dt)
 
     if (ang_vel_norm > 0.0000001)
     {
+        // 归一化
         Eigen::Matrix<T, 3, 1> r_axis = ang_vel / ang_vel_norm;
         Eigen::Matrix<T, 3, 3> K;
-
+        // 得到角速度反对称矩阵
         K << SKEW_SYM_MATRIX(r_axis);
 
         T r_ang = ang_vel_norm * dt;
@@ -80,6 +81,9 @@ Eigen::Matrix<T,3,1> SO3_LOG(const Eigen::Matrix<T, 3, 3> &R)
     return (std::abs(theta) < 0.001) ? (0.5 * K) : (0.5 * theta / std::sin(theta) * K);
 }
 
+/**
+ * 计算欧拉角
+ */
 template<typename T>
 Eigen::Matrix<T, 3, 1> RotMtoEuler(const Eigen::Matrix<T, 3, 3> &rot)
 {

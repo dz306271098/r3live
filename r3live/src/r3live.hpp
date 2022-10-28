@@ -155,7 +155,7 @@ public:
     /// IMU relative variables
     std::mutex mtx_buffer;
     std::condition_variable sig_buffer;
-    bool lidar_pushed = false;
+    bool lidar_pushed = false;  ///< 标志位，如果正在同步（lidar/imu）数据sync_packages时，如果已经填入了lidar数据，则设置为true，后面就填imu数据即可
     bool flg_exit = false;
     bool flg_reset = false;
 
@@ -234,7 +234,7 @@ public:
     std::deque<sensor_msgs::ImageConstPtr> m_queue_image_msg;
     std::deque<std::shared_ptr<Image_frame>> m_queue_image_with_pose;
     std::list<std::shared_ptr<Image_frame>> g_image_vec;
-    Eigen::Matrix3d g_cam_K;
+    Eigen::Matrix3d g_cam_K;    ///< 相机内参矩阵
     Eigen::Matrix<double, 5, 1> g_cam_dist;
     double m_vio_scale_factor = 1.0;
     cv::Mat m_ud_map1, m_ud_map2;
@@ -254,7 +254,7 @@ public:
     int m_if_estimate_i2c_extrinsic = 1;
     int m_if_estimate_intrinsic = 1;
     double m_control_image_freq =  100; 
-    int m_maximum_vio_tracked_pts = 300;
+    int m_maximum_vio_tracked_pts = 300;    ///< 最大跟踪特征点数
     int m_lio_update_point_step = 1;
     int m_append_global_map_point_step = 1;
     int m_pub_pt_minimum_views = 5;
@@ -419,6 +419,7 @@ public:
 
         m_lio_state_fp = fopen( std::string(m_map_output_dir).append("/lic_lio.log").c_str(), "w+");
         m_lio_costtime_fp = fopen(std::string(m_map_output_dir).append("/lic_lio_costtime.log").c_str(), "w+");
+        // 启动LIO线程
         m_thread_pool_ptr->commit_task(&R3LIVE::service_LIO_update, this);
              
     }
